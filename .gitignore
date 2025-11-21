@@ -1,0 +1,21 @@
+# Maven / Gradle
+target/
+*.class
+*.jar
+*.war
+
+# IntelliJ / VSCode
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+
+# Node / React
+node_modules/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
