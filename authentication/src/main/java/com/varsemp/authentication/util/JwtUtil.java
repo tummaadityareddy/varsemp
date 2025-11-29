@@ -18,7 +18,7 @@ public class JwtUtil {
     private String secret;
 
     @Value("${jwt.expiration-millis}")
-    private String expirationMillis;
+    private long expirationMillis;
 
     private SecretKey secretKey;
 

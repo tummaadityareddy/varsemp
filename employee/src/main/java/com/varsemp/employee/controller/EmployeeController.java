@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/employees")
+@RequestMapping("/employee")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -20,7 +20,7 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> getAllEmployees(@RequestBody Employee employee){
+    public List<Employee> getAllEmployees(){
         return employeeService.getAllEmployees();
     }
 
