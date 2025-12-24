@@ -29,11 +29,9 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                bat '''
-                docker build -t %DOCKERHUB_USERNAME%/authentication ./authentication
-                docker build -t %DOCKERHUB_USERNAME%/employee ./employee
-                docker build -t %DOCKERHUB_USERNAME%/apigateway ./apigateway
-                '''
+                bat 'docker build -t %DOCKERHUB_USERNAME%/authentication ./authentication'
+                bat 'docker build -t %DOCKERHUB_USERNAME%/employee ./employee'
+                bat 'docker build -t %DOCKERHUB_USERNAME%/apigateway ./apigateway'
             }
         }
 
@@ -44,5 +42,28 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    bat '''
-                    echo %DOCKER_PASS% | docker login -u %D_
+                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                    bat 'docker push %DOCKERHUB_USERNAME%/authentication'
+                    bat 'docker push %DOCKERHUB_USERNAME%/employee'
+                    bat 'docker push %DOCKERHUB_USERNAME%/apigateway'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                bat 'docker compose down'
+                bat 'docker compose up -d'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'CI/CD Pipeline completed successfully'
+        }
+        failure {
+            echo 'CI/CD Pipeline failed'
+        }
+    }
+}
