@@ -1,10 +1,17 @@
 pipeline {
     agent any
+
     environment {
         DOCKERHUB_USERNAME    = 'tummaadityareddy'
         DOCKERHUB_CREDENTIALS = 'dockerhub-creds'
     }
+
+    tools {
+        maven 'Maven-3'
+    }
+
     stages {
+
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
@@ -15,9 +22,8 @@ pipeline {
 
         stage('Build JARs') {
             steps {
-                withMaven(maven: 'Maven-3'){
+                bat 'mvn -version'
                 bat 'mvn clean package -DskipTests'
-                }
             }
         }
 
@@ -39,31 +45,4 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     bat '''
-                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
-                    docker push %DOCKERHUB_USERNAME%/authentication
-                    docker push %DOCKERHUB_USERNAME%/employee
-                    docker push %DOCKERHUB_USERNAME%/apigateway
-                    '''
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                bat '''
-                docker compose down
-                docker compose up -d
-                '''
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'CI/CD Pipeline completed successfully'
-        }
-        failure {
-            echo 'CI/CD Pipeline failed'
-        }
-    }
-}
+                    echo %DOCKER_PASS% | docker login -u %D_
