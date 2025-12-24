@@ -45,12 +45,11 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                bat 'docker build -t %DOCKERHUB_USERNAME%/authentication ./authentication'
-                bat 'docker build -t %DOCKERHUB_USERNAME%/employee ./employee'
-                bat 'docker build -t %DOCKERHUB_USERNAME%/apigateway ./apigateway'
+                bat 'docker build -t %DOCKERHUB_USERNAME%/authentication authentication'
+                bat 'docker build -t %DOCKERHUB_USERNAME%/employee employee'
+                bat 'docker build -f apigateway/Dockerfile -t %DOCKERHUB_USERNAME%/apigateway apigateway'
             }
         }
-
         stage('Docker Push') {
             steps {
                 withCredentials([usernamePassword(
