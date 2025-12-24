@@ -16,8 +16,7 @@ services:
       - pg-data:/var/lib/postgresql/data
 #--------------------Authentication---------------
   authentication:
-    build:
-      context: ./authentication
+    image: tummaadityareddy/authentication:${IMAGE_VERSION}
     container_name: authentication
     ports:
       - "8081:8081"
@@ -31,8 +30,7 @@ services:
       - employee-net
 #--------------------Employee---------------
   employee:
-    build:
-      context: ./employee
+    image: tummaadityareddy/employee:${IMAGE_VERSION}
     container_name: employee
     ports:
       - "8082:8082"
@@ -46,8 +44,7 @@ services:
       - employee-net
 #--------------------ApiGateway--------------
   apigateway:
-    build:
-      context: ./apigateway
+    image: tummaadityareddy/apigateway:${IMAGE_VERSION}
     container_name: apigateway
     ports:
       - "8080:8080"

@@ -1,6 +1,8 @@
 pipeline {
     agent any
     environment {
+        IMAGE_VERSION = "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}"
+        DOCKER_USER   = "tummaadityareddy"
         DOCKERHUB_USERNAME    = 'tummaadityareddy'
         DOCKERHUB_CREDENTIALS = 'dockerhub-creds'
     }
@@ -45,9 +47,9 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                bat 'docker build -t %DOCKERHUB_USERNAME%/authentication authentication'
-                bat 'docker build -t %DOCKERHUB_USERNAME%/employee employee'
-                bat 'docker build -t %DOCKERHUB_USERNAME%/apigateway apigateway'
+                bat 'docker build -t %DOCKERHUB_USER%/authentication:${IMAGE_VERSION} authentication'
+                bat 'docker build -t %DOCKERHUB_USER%/employee:${IMAGE_VERSION} employee'
+                bat 'docker build -t %DOCKERHUB_USER%/apigateway:${IMAGE_VERSION} apigateway'
             }
         }
         stage('Docker Push') {
@@ -58,17 +60,20 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
-                    bat 'docker push %DOCKERHUB_USERNAME%/authentication'
-                    bat 'docker push %DOCKERHUB_USERNAME%/employee'
-                    bat 'docker push %DOCKERHUB_USERNAME%/apigateway'
+                    bat 'docker push ${DOCKER_USER}/authentication:${IMAGE_VERSION}'
+                    bat 'docker push ${DOCKER_USER}/employee:${IMAGE_VERSION}'
+                    bat 'docker push ${DOCKER_USER}/apigateway:${IMAGE_VERSION}'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                bat 'docker compose down'
-                bat 'docker compose up -d'
+                bat """
+                 set IMAGE_VERSION=${IMAGE_VERSION}
+                  docker compose down
+                  docker compose up -d
+                 """
             }
         }
     }
