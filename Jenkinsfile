@@ -20,10 +20,27 @@ pipeline {
             }
         }
 
-        stage('Build JARs') {
+        stage('Build Authentication Service') {
             steps {
-                bat 'mvn -version'
-                bat 'mvn clean package -DskipTests'
+                dir('authentication') {
+                    bat 'mvn clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Build Employee Service') {
+            steps {
+                dir('employee') {
+                    bat 'mvn clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Build API Gateway Service') {
+            steps {
+                dir('apigateway') {
+                    bat 'mvn clean package -DskipTests'
+                }
             }
         }
 
