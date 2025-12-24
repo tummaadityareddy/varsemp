@@ -3,7 +3,6 @@ pipeline {
     environment {
         IMAGE_VERSION = "1.0.${BUILD_NUMBER}"
         DOCKER_USER   = "tummaadityareddy"
-        DOCKERHUB_USERNAME    = 'tummaadityareddy'
         DOCKERHUB_CREDENTIALS = 'dockerhub-creds'
     }
 
@@ -61,10 +60,12 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    bat """echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
-                    docker push %{DOCKER_USER}%/authentication:%{IMAGE_VERSION}%
-                    docker push %{DOCKER_USER}%/employee:%{IMAGE_VERSION}%
-                    docker push %{DOCKER_USER}%/apigateway:%{IMAGE_VERSION}%
+                    bat """
+                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+
+                    docker push %DOCKER_USER%/authentication:%IMAGE_VERSION%
+                    docker push %DOCKER_USER%/employee:%IMAGE_VERSION%
+                    docker push %DOCKER_USER%/apigateway:%IMAGE_VERSION%
                     """
                 }
             }
