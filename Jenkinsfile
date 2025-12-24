@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        IMAGE_VERSION = "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}"
+        IMAGE_VERSION = "1.0.${BUILD_NUMBER}"
         DOCKER_USER   = "tummaadityareddy"
         DOCKERHUB_USERNAME    = 'tummaadityareddy'
         DOCKERHUB_CREDENTIALS = 'dockerhub-creds'
@@ -47,9 +47,11 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                bat 'docker build -t %DOCKERHUB_USER%/authentication:${IMAGE_VERSION} authentication'
-                bat 'docker build -t %DOCKERHUB_USER%/employee:${IMAGE_VERSION} employee'
-                bat 'docker build -t %DOCKERHUB_USER%/apigateway:${IMAGE_VERSION} apigateway'
+                bat """
+                docker build -t tummaadityareddy/authentication:${IMAGE_VERSION} authentication
+                docker build -t tummaadityareddy/employee:${IMAGE_VERSION} employee
+                docker build -t tummaadityareddy/apigateway:${IMAGE_VERSION} apigateway
+                """
             }
         }
         stage('Docker Push') {
